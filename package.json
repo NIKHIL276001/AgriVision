@@ -1,0 +1,19 @@
+{
+  "name": "final-project-agrivision-ai",
+  "version": "1.0.0",
+  "description": "Full stack AI based smart crop disease detection and farming assistant.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "agriculture",
+    "crop-disease",
+    "farming-assistant",
+    "pwa",
+    "full-stack"
+  ],
+  "author": "",
+  "license": "MIT"
+}

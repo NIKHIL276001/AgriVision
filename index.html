@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2f7d3c">
+  <meta name="description" content="Installable AI crop disease detection and farming assistant app for farmers.">
+  <title>AgriVision AI | Smart Crop Disease Detection</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="auth-screen" id="authScreen" aria-label="Login">
+      <div class="auth-visual">
+        <img src="assets/farm-assistant-hero.png" alt="Farmer using a smartphone to inspect crops">
+        <div class="brand-panel">
+          <span class="brand-mark">AV</span>
+          <div>
+            <p class="eyebrow">AI farming assistant</p>
+            <h1>AgriVision AI</h1>
+          </div>
+        </div>
+      </div>
+
+      <form class="login-card" id="loginForm">
+        <p class="eyebrow">Farmer login</p>
+        <h2>Detect crop disease and get treatment guidance.</h2>
+        <label>
+          Mobile number or email
+          <input type="text" id="loginId" placeholder="farmer@example.com" required>
+        </label>
+        <label>
+          Password
+          <input type="password" id="password" placeholder="Enter any password" required minlength="4">
+        </label>
+        <button class="primary-btn" type="submit">Login to dashboard</button>
+        <p class="form-note">Demo login accepts any email/mobile and password with 4 or more characters.</p>
+      </form>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard" aria-label="Dashboard">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand-mark">AV</span>
+          <div>
+            <strong>AgriVision AI</strong>
+            <small>Crop care dashboard</small>
+          </div>
+        </div>
+        <nav class="nav-list" aria-label="Main sections">
+          <a href="#detector" class="active" data-view-link="detector">Disease Detector</a>
+          <a href="#assistant" data-view-link="assistant">Farming Assistant</a>
+          <a href="#calendar" data-view-link="calendar">Care Plan</a>
+        </nav>
+        <div class="sidebar-summary">
+          <span>Today</span>
+          <strong>28°C</strong>
+          <small>Humid weather. Watch fungal spread after irrigation.</small>
+        </div>
+        <button class="ghost-btn" id="logoutBtn" type="button">Logout</button>
+      </aside>
+
+      <div class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Welcome back</p>
+            <h2 id="welcomeName">Smart farming workspace</h2>
+          </div>
+          <div class="status-pill">
+            <span></span>
+            <strong id="connectionStatus">Online</strong>
+          </div>
+          <button class="ghost-btn compact hidden" id="installAppBtn" type="button">Install app</button>
+        </header>
+
+        <section class="hero-strip dashboard-view active" data-view="detector">
+          <img src="assets/farm-assistant-hero.png" alt="Smartphone crop inspection in a farm">
+          <div>
+            <p class="eyebrow">Plant health scan</p>
+            <h3>Upload a plant photo, review the likely disease, and follow a practical treatment plan.</h3>
+            <div class="hero-metrics" aria-label="Dashboard summary">
+              <span><strong id="totalScans">0</strong> scans</span>
+              <span><strong>5</strong> crops</span>
+              <span><strong id="fieldRisk">Low</strong> field risk</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="insight-grid dashboard-view active" data-view="detector">
+          <article class="insight-card">
+            <span>Weather advisory</span>
+            <strong>High humidity window</strong>
+            <p>Prefer morning field inspection and avoid wetting leaves in the evening.</p>
+          </article>
+          <article class="insight-card amber">
+            <span>Soil reminder</span>
+            <strong>Check moisture before spray</strong>
+            <p>Spraying stressed plants can reduce treatment effectiveness.</p>
+          </article>
+          <article class="insight-card blue">
+            <span>Next action</span>
+            <strong>Capture close leaf photo</strong>
+            <p>Use daylight and include both healthy and affected leaves when possible.</p>
+          </article>
+        </section>
+
+        <section class="content-grid dashboard-view active" id="detector" data-view="detector">
+          <article class="tool-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Step 1</p>
+                <h3>Upload plant image</h3>
+              </div>
+              <span class="mini-badge">JPG PNG WEBP</span>
+            </div>
+
+            <label class="upload-zone" for="plantImage" id="uploadZone">
+              <input type="file" id="plantImage" accept="image/*">
+              <span class="upload-icon">+</span>
+              <strong>Choose plant leaf photo</strong>
+              <small>Clear close-up photos give better detection results.</small>
+            </label>
+
+            <div class="preview-area hidden" id="previewArea">
+              <img id="previewImage" alt="Uploaded plant preview">
+              <div class="ai-analysis-card" id="aiAnalysisCard">
+                <div class="ai-analysis-head">
+                  <div>
+                    <p class="eyebrow">Computer vision</p>
+                    <strong id="aiStatus">Waiting for image analysis</strong>
+                  </div>
+                  <span class="mini-badge">ML prototype</span>
+                </div>
+                <div class="vision-grid">
+                  <span><strong id="greenScore">0%</strong> leaf coverage</span>
+                  <span><strong id="yellowScore">0%</strong> yellowing</span>
+                  <span><strong id="spotScore">0%</strong> spot index</span>
+                  <span><strong id="qualityScore">0%</strong> image quality</span>
+                </div>
+              </div>
+              <button class="ghost-btn compact" id="clearImageBtn" type="button">Remove image</button>
+            </div>
+
+            <div class="form-grid">
+              <label>
+                Farm location
+                <input type="text" id="farmLocation" placeholder="Example: Nashik, Maharashtra">
+              </label>
+              <label>
+                Field size
+                <input type="text" id="fieldSize" placeholder="Example: 2 acres">
+              </label>
+              <label>
+                Crop type
+                <select id="cropType">
+                  <option value="tomato">Tomato</option>
+                  <option value="rice">Rice</option>
+                  <option value="potato">Potato</option>
+                  <option value="wheat">Wheat</option>
+                  <option value="cotton">Cotton</option>
+                </select>
+              </label>
+              <label>
+                Crop stage
+                <select id="cropStage">
+                  <option value="Seedling">Seedling</option>
+                  <option value="Vegetative">Vegetative</option>
+                  <option value="Flowering">Flowering</option>
+                  <option value="Fruiting">Fruiting</option>
+                  <option value="Harvest-ready">Harvest-ready</option>
+                </select>
+              </label>
+              <label>
+                Visible symptom
+                <select id="symptomType">
+                  <option value="spots">Leaf spots</option>
+                  <option value="yellow">Yellowing</option>
+                  <option value="curl">Leaf curling</option>
+                  <option value="blight">Blight patches</option>
+                  <option value="healthy">Looks healthy</option>
+                </select>
+              </label>
+            </div>
+
+            <button class="primary-btn" id="detectBtn" type="button">Detect disease</button>
+          </article>
+
+          <article class="result-panel" id="resultPanel">
+            <p class="eyebrow">Step 2</p>
+            <h3>Detection result</h3>
+            <div class="empty-state" id="emptyResult">
+              <strong>No scan yet</strong>
+              <span>Upload an image and run detection to see disease probability, causes, and solutions.</span>
+            </div>
+            <div class="scan-result hidden" id="scanResult">
+              <div class="risk-row">
+                <div>
+                  <span class="risk-label" id="riskLabel">Moderate risk</span>
+                  <h4 id="diseaseName">Disease name</h4>
+                </div>
+                <strong id="confidenceScore">86%</strong>
+              </div>
+              <div class="progress-track">
+                <span id="confidenceBar"></span>
+              </div>
+              <p id="diseaseSummary"></p>
+              <div class="ml-explain">
+                <strong>AI image signals</strong>
+                <span id="mlExplanation">The image model explanation will appear after scanning.</span>
+              </div>
+              <h5>Recommended solution</h5>
+              <ul id="solutionList"></ul>
+              <h5>Prevention</h5>
+              <p id="preventionText"></p>
+              <div class="result-actions">
+                <button class="ghost-btn compact" id="downloadReportBtn" type="button">Download report</button>
+                <button class="ghost-btn compact" id="copyAdviceBtn" type="button">Copy advice</button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="history-grid dashboard-view active" data-view="detector">
+          <article class="tool-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Recent scans</p>
+                <h3>Field health history</h3>
+              </div>
+              <button class="ghost-btn compact" id="clearHistoryBtn" type="button">Clear history</button>
+            </div>
+            <div class="history-list" id="historyList">
+              <div class="empty-history">No saved scans yet. Run detection to build field records.</div>
+            </div>
+          </article>
+        </section>
+
+        <section class="assistant-grid dashboard-view hidden" id="assistant" data-view="assistant">
+          <article class="tool-panel assistant-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Farming assistant</p>
+                <h3>Ask for crop care guidance</h3>
+              </div>
+            </div>
+            <div class="quick-prompts" aria-label="Quick assistant prompts">
+              <button type="button" data-prompt="How should I manage fungal disease after rain?">Rain disease care</button>
+              <button type="button" data-prompt="Which fertilizer schedule is good for tomato flowering stage?">Fertilizer plan</button>
+              <button type="button" data-prompt="How do I control whitefly without harming useful insects?">Pest control</button>
+            </div>
+            <div class="chat-window" id="chatWindow">
+              <div class="message bot">Namaste. Ask me about watering, fertilizer, pest control, weather care, or soil health.</div>
+            </div>
+            <form class="chat-form" id="chatForm">
+              <input type="text" id="chatInput" placeholder="Example: How often should I water tomatoes?" required>
+              <button class="primary-btn compact" type="submit">Ask</button>
+            </form>
+          </article>
+        </section>
+
+        <section class="care-plan-view dashboard-view hidden" id="calendar" data-view="calendar">
+          <article class="tool-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Care plan</p>
+                <h3>7-day farm checklist</h3>
+              </div>
+              <span class="mini-badge" id="careProgress">0 of 7 done</span>
+            </div>
+            <div class="checklist">
+              <label><input type="checkbox" data-care-item="inspect"><span><strong>Day 1</strong> Inspect leaves early morning <small>Priority: high</small></span></label>
+              <label><input type="checkbox" data-care-item="remove"><span><strong>Day 1</strong> Remove heavily infected leaves <small>Dispose away from the field</small></span></label>
+              <label><input type="checkbox" data-care-item="moisture"><span><strong>Day 2</strong> Check soil moisture before irrigation <small>Avoid excess leaf wetness</small></span></label>
+              <label><input type="checkbox" data-care-item="compost"><span><strong>Day 3</strong> Apply organic compost around root zone <small>Do not touch the stem directly</small></span></label>
+              <label><input type="checkbox" data-care-item="tools"><span><strong>Day 4</strong> Clean tools after pruning <small>Reduces disease transfer</small></span></label>
+              <label><input type="checkbox" data-care-item="rows"><span><strong>Day 5</strong> Keep rows ventilated and weed-free <small>Improves airflow</small></span></label>
+              <label><input type="checkbox" data-care-item="records"><span><strong>Day 7</strong> Save photo records for next scan <small>Compare recovery progress</small></span></label>
+            </div>
+            <button class="ghost-btn compact checklist-reset" id="resetCarePlan" type="button">Reset checklist</button>
+          </article>
+
+          <article class="tool-panel">
+            <p class="eyebrow">Spray safety</p>
+            <h3>Before applying treatment</h3>
+            <div class="safety-list">
+              <p><strong>Read label:</strong> follow dosage written on the product.</p>
+              <p><strong>Protective gear:</strong> use gloves, mask, full sleeves, and eye protection.</p>
+              <p><strong>Best timing:</strong> spray early morning or evening when wind is low.</p>
+              <p><strong>Waiting period:</strong> do not harvest before the recommended safe interval.</p>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
